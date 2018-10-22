@@ -33,4 +33,4 @@ script:
 after_success:
 # Push to docker registry
   - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-  - docker push txzdream/go-online-static_end:dev
+  - docker push txzdream/go-online-static_end:dev 
