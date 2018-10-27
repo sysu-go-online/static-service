@@ -10,11 +10,24 @@ import (
 	"gopkg.in/h2non/filetype.v1"
 
 	"github.com/gorilla/mux"
+	"github.com/sysu-go-online/public-service/tools"
 )
 
 // ImageFileHandler returns image file
 func ImageFileHandler(w http.ResponseWriter, r *http.Request) error {
-	path := filepath.Join("/home/", mux.Vars(r)["filepath"])
+	// parse token
+	token := r.Header.Get("Authorization")
+	if valid, err := tools.CheckJWT(token, AuthRedisClient); !(err == nil && valid) {
+		w.WriteHeader(401)
+		return nil
+	}
+	ok, username := tools.GetUserNameFromToken(token, AuthRedisClient)
+	if !ok || username != mux.Vars(r)["username"] {
+		w.WriteHeader(401)
+		return nil
+	}
+
+	path := filepath.Join("/home/", username, "projects", mux.Vars(r)["filepath"])
 	f, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		w.WriteHeader(204)
@@ -35,7 +48,7 @@ func ImageFileHandler(w http.ResponseWriter, r *http.Request) error {
 	if filetype.IsImage(buf) {
 		file, err := os.Open(path)
 		if err != nil {
-			return nil
+			return err
 		}
 		w.Header().Set("Content-Type", "image/jpeg")
 		io.Copy(w, file)
