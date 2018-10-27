@@ -15,13 +15,21 @@ import (
 // ImageFileHandler returns image file
 func ImageFileHandler(w http.ResponseWriter, r *http.Request) error {
 	path := filepath.Join("/home/", mux.Vars(r)["filepath"])
-	if _, err := os.Stat(path); os.IsNotExist(err) {
+	f, err := os.Stat(path)
+	if os.IsNotExist(err) {
 		w.WriteHeader(204)
 		return nil
 	}
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
 		w.WriteHeader(204)
+		return nil
+	}
+	// check file sizef
+	// get the size
+	size := f.Size()
+	if size > 4*1024*1024 {
+		w.WriteHeader(400)
 		return nil
 	}
 	if filetype.IsImage(buf) {
