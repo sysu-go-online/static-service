@@ -15,6 +15,7 @@ var upgrader = websocket.Upgrader{}
 func GetServer() *negroni.Negroni {
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
+		AllowedHeaders: []string{"Authorization"},
 	})
 	r := mux.NewRouter()
 
