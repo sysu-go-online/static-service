@@ -62,7 +62,7 @@ func ImageFileHandler(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	path := filepath.Join("/home/", username, "projects", p.Path, filePath)
+	path := filepath.Join("/home/", username, "projects", p.Path, p.Name, filePath)
 	f, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		log.Println(err)
