@@ -13,14 +13,16 @@ var upgrader = websocket.Upgrader{}
 
 // GetServer return web server
 func GetServer() *negroni.Negroni {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+	})
 	r := mux.NewRouter()
 
 	// user collection
 	r.Handle("/{username}/{filepath:.*}", types.ErrorHandler(controller.ImageFileHandler)).Methods("GET")
 
 	// Use classic server and return it
-	handler := cors.Default().Handler(r)
 	s := negroni.Classic()
-	s.UseHandler(handler)
+	s.Use(c)
 	return s
 }
