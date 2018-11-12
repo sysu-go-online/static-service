@@ -25,5 +25,6 @@ func GetServer() *negroni.Negroni {
 	// Use classic server and return it
 	s := negroni.Classic()
 	s.Use(c)
+	s.UseHandler(r)
 	return s
 }
