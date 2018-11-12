@@ -34,7 +34,7 @@ func ImageFileHandler(w http.ResponseWriter, r *http.Request) error {
 	vars := mux.Vars(r)
 	projectName := vars["projectname"]
 	filePath := vars["filepath"]
-	givenUsername := vars[username]
+	givenUsername := vars["username"]
 
 	if givenUsername != username {
 		w.WriteHeader(401)
