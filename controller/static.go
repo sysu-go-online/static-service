@@ -3,6 +3,7 @@ package controller
 import (
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -30,15 +31,17 @@ func ImageFileHandler(w http.ResponseWriter, r *http.Request) error {
 	path := filepath.Join("/home/", username, "projects", mux.Vars(r)["filepath"])
 	f, err := os.Stat(path)
 	if os.IsNotExist(err) {
+		log.Println(err)
 		w.WriteHeader(204)
 		return nil
 	}
 	buf, err := ioutil.ReadFile(path)
 	if err != nil {
+		log.Println(err)
 		w.WriteHeader(204)
 		return nil
 	}
-	// check file sizef
+	// check file size
 	// get the size
 	size := f.Size()
 	if size > 4*1024*1024 {
@@ -48,6 +51,7 @@ func ImageFileHandler(w http.ResponseWriter, r *http.Request) error {
 	if filetype.IsImage(buf) {
 		file, err := os.Open(path)
 		if err != nil {
+			log.Println(err)
 			return err
 		}
 		w.Header().Set("Content-Type", "image/jpeg")
